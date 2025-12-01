@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waffle & Drinks</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #e91e63; /* Beautiful pink */
+  --secondary: #fce4ec; /* Soft light pink */
+  --accent: #c2185b; /* Medium pink accent */
+  --light-pink: #f8bbd9; /* Light pink */
+  --text-dark: #880e4f; /* Dark pink for text */
+  --text-light: #ffffff; /* White for contrast */
+  --menu-item-bg: #fce4ec; /* Pink background for menu items */
+}
+body {
+  font-family:'Poppins',sans-serif;
+  margin:0;
+  padding:0;
+  background: linear-gradient(135deg, var(--secondary) 0%, #f8bbd9 100%);
+  color: var(--text-dark);
+}
+header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  padding:15px 0;
+  text-align:center;
+  font-size:28px;
+  font-weight:700;
+  position:relative;
+  box-shadow:0 4px 15px rgba(233, 30, 99, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.header-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.logoutBtn {
+  position:absolute;
+  right:20px;
+  top:20px;
+  padding:6px 10px;
+  border:none;
+  border-radius:8px;
+  background: var(--text-light);
+  color: var(--primary);
+  cursor:pointer;
+  font-weight:600;
+  font-size:14px;
+  transition: 0.3s;
+}
+.logoutBtn:hover { 
+  background: var(--light-pink);
+  transform: translateY(-2px);
+}
+
+/* Toast */
+#toast {
+  visibility:hidden;
+  min-width:250px;
+  margin-left:-125px;
+  background-color: var(--primary);
+  color: var(--text-light);
+  text-align:center;
+  border-radius:8px;
+  padding:12px;
+  position:fixed;
+  top:30px;
+  left:50%;
+  z-index:1000;
+  font-size:16px;
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+}
+#toast.show {
+  visibility:visible;
+  animation:fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@keyframes fadein { from {top:0; opacity:0;} to {top:30px; opacity:1;} }
+@keyframes fadeout { from {top:30px; opacity:1;} to {top:0; opacity:0;} }
+
+/* LOGIN + REGISTER + MISSION/VISION + IMAGE */
+#loginDiv {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:30px;
+  margin-top:50px;
+  flex-wrap:wrap;
+}
+.login-left {
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+#loginDiv input, #loginDiv select, #loginDiv button {
+  margin:8px 0;
+  padding:12px;
+  width:280px;
+  border-radius:12px;
+  border:1px solid var(--light-pink);
+  font-size:18px;
+  background: var(--text-light);
+  color: var(--text-dark);
+  transition: 0.3s;
+}
+#loginDiv input:focus, #loginDiv select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
+}
+#loginDiv input::placeholder {
+  color: #c48b9f;
+}
+#loginDiv select {
+  background: var(--text-light);
+  color: var(--text-dark);
+}
+#loginDiv button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  border:none;
+  cursor:pointer;
+  transition:0.3s;
+  font-size:20px;
+  font-weight:700;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+#loginDiv button::before {
+  content: '❤️';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+}
+#loginDiv button:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+}
+
+/* Mission & Vision Box */
+.mission-vision-box {
+  background: rgba(233, 30, 99, 0.1);
+  padding:30px;
+  border-radius:16px;
+  max-width:450px;
+  box-shadow:0 6px 15px rgba(233, 30, 99, 0.2);
+  border: 1px solid rgba(233, 30, 99, 0.2);
+  backdrop-filter: blur(5px);
+}
+.mission-vision-box p {
+  color: var(--text-dark);
+  font-weight:700;
+  font-size:18px;
+  margin:0;
+  line-height:1.5;
+}
+
+/* Login image on right */
+#loginImage {
+  max-width:500px;
+  width:100%;
+  border-radius:16px;
+  object-fit:cover;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--light-pink) 100%);
+  padding: 20px;
+}
+
+/* Social media icons */
+.social-icons {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-top:15px;
+}
+.social-icons img {
+  width:32px;
+  height:32px;
+  cursor:pointer;
+  transition:0.3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.social-icons img:hover { 
+  transform:scale(1.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Dashboard */
+#dashboard { 
+  display:none; 
+  padding:20px; 
+  background: linear-gradient(135deg, var(--secondary) 0%, #f8bbd9 100%);
+}
+
+/* Section backgrounds - ALL PINK */
+#customerSection, #staffSection, #adminSection {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:20px;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
+  border: 1px solid var(--light-pink);
+}
+
+/* Shopee-style grid */
+.menu-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:15px;
+}
+.menu-item {
+  background: var(--menu-item-bg); /* Changed from white to pink */
+  padding:10px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(233, 30, 99, 0.1);
+  text-align:center;
+  transition:0.3s;
+  border: 1px solid var(--light-pink);
+  color: var(--text-dark);
+}
+.menu-item:hover {
+  transform:translateY(-5px);
+  box-shadow:0 8px 20px rgba(233, 30, 99, 0.2);
+  border-color: var(--primary);
+}
+.menu-item img {
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:10px;
+  margin-bottom:8px;
+  border: 1px solid var(--light-pink);
+}
+.menu-item h4 { margin:4px 0; font-size:14px; color: var(--text-dark); }
+.menu-item p { margin:4px 0; font-weight:500; color: var(--primary); font-size:13px; }
+.menu-item button {
+  padding:5px 10px;
+  border:none;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  border-radius:6px;
+  transition:0.3s;
+  cursor:pointer;
+  font-size:13px;
+  margin:2px;
+  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+}
+.menu-item button:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.4);
+}
+
+/* Tables */
+table {
+  width:100%;
+  border-collapse:collapse;
+  background: var(--text-light);
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 3px 10px rgba(233, 30, 99, 0.1);
+  margin-bottom:15px;
+  font-size:13px;
+  border: 1px solid var(--light-pink);
+}
+th, td {
+  border-bottom:1px solid var(--light-pink);
+  padding:8px;
+  text-align:center;
+  color: var(--text-dark);
+}
+th { background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: var(--text-light); font-size:13px; }
+td button, td select {
+  padding:4px 8px;
+  border:none;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  border-radius:5px;
+  cursor:pointer;
+  font-size:12px;
+  transition: 0.3s;
+  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+}
+td button:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-1px);
+}
+td select {
+  background: var(--text-light);
+  color: var(--text-dark);
+  border:1px solid var(--light-pink);
+  cursor:pointer;
+  font-size:12px;
+  box-shadow: none;
+}
+
+/* Admin forms */
+#adminSection input, #adminSection select, #adminSection button {
+  padding:6px;
+  margin:4px 0;
+  width:100%;
+  border-radius:6px;
+  border:1px solid var(--light-pink);
+  font-size:13px;
+  background: var(--text-light);
+  color: var(--text-dark);
+  transition: 0.3s;
+}
+#adminSection input:focus, #adminSection select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
+}
+#adminSection input::placeholder {
+  color: #c48b9f;
+}
+#adminSection button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  border:none;
+  cursor:pointer;
+  transition:0.3s;
+  font-size:13px;
+  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+}
+#adminSection button:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.4);
+}
+
+/* Mini Shopee-style cart */
+.cart {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: 0.3s all;
+  overflow: hidden;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+  border: 2px solid var(--text-light);
+}
+.cart:hover { 
+  width: 350px; 
+  height: auto; 
+  border-radius: 12px; 
+  background: var(--text-light); 
+  color: var(--text-dark); 
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3);
+}
+.cart h3 { display: none; color: var(--primary); margin: 6px 0; }
+.cart:hover h3 { display: block; text-align: center; }
+.cart-items-wrapper { display: none; max-height: 300px; overflow-y: auto; }
+.cart:hover .cart-items-wrapper { display: block; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; color: var(--text-dark); }
+.cart-item button { 
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); 
+  border: none; 
+  color: var(--text-light); 
+  border-radius: 5px; 
+  padding: 2px 5px; 
+  cursor: pointer; 
+  font-size: 12px; 
+  transition: 0.3s;
+  box-shadow: 0 1px 3px rgba(233, 30, 99, 0.3);
+}
+.cart-item button:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: scale(1.05);
+}
+.cart-total { font-weight: 700; font-size: 16px; margin-top: 8px; text-align: right; color: var(--text-dark); }
+select.payment, select.delivery-service, select.address { 
+  width: 100%; 
+  padding: 6px; 
+  margin: 6px 0; 
+  border-radius: 5px; 
+  border: 1px solid var(--light-pink); 
+  font-size: 13px; 
+  background: var(--text-light); 
+  color: var(--text-dark);
+}
+button.pay { 
+  width: 100%; 
+  margin-top: 6px; 
+  padding: 8px; 
+  font-size: 14px; 
+  border: none; 
+  border-radius: 8px; 
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); 
+  color: var(--text-light); 
+  cursor: pointer; 
+  transition: 0.3s; 
+  box-shadow: 0 3px 8px rgba(233, 30, 99, 0.3);
+}
+button.pay:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(233, 30, 99, 0.4);
+}
+.cart-badge { 
+  position: absolute; 
+  top: -5px; 
+  right: -5px; 
+  background: var(--accent); 
+  color: var(--text-light); 
+  font-size: 12px; 
+  font-weight: 600; 
+  padding: 2px 6px; 
+  border-radius: 50%; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Reference Number Input */
+.reference-input {
+  display: none;
+  width: 100%;
+  padding: 6px;
+  margin: 6px 0;
+  border-radius: 5px;
+  border: 1px solid var(--light-pink);
+  font-size: 13px;
+  background: var(--text-light);
+  color: var(--text-dark);
+}
+
+/* Visit Us Box */
+.visit-box {
+  background: rgba(233, 30, 99, 0.1);
+  padding:15px;
+  border-radius:12px;
+  margin-top:15px;
+  box-shadow:0 3px 10px rgba(233, 30, 99, 0.1);
+  font-size:14px;
+  line-height:1.5;
+  color: var(--text-dark);
+  border: 1px solid rgba(233, 30, 99, 0.2);
+}
+
+/* Register link */
+.register-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.register-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* Register form */
+#registerDiv {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+#registerDiv input, #registerDiv select, #registerDiv button {
+  margin: 8px 0;
+  padding: 12px;
+  width: 280px;
+  border-radius: 12px;
+  border: 1px solid var(--light-pink);
+  font-size: 18px;
+  background: var(--text-light);
+  color: var(--text-dark);
+  transition: 0.3s;
+}
+#registerDiv input:focus, #registerDiv select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
+}
+#registerDiv input::placeholder {
+  color: #c48b9f;
+}
+#registerDiv button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+#registerDiv button:hover { 
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+}
+.back-to-login {
+  text-align: center;
+  margin-top: 10px;
+}
+.back-to-login a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.back-to-login a:hover {
+  text-decoration: underline;
+}
+
+/* Password requirement text */
+.password-requirement {
+  font-size: 12px;
+  color: #c48b9f;
+  text-align: center;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+/* Payment Modal */
+.payment-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+.payment-content {
+  background: var(--text-light);
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3);
+  border: 1px solid var(--light-pink);
+  color: var(--text-dark);
+}
+.payment-content h3 {
+  color: var(--primary);
+  margin-bottom: 15px;
+  text-align: center;
+}
+.payment-content input, .payment-content select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid var(--light-pink);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--text-light);
+  color: var(--text-dark);
+}
+.payment-content input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
+}
+.payment-content input::placeholder {
+  color: #c48b9f;
+}
+.payment-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+.payment-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.confirm-pay {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--text-light);
+  box-shadow: 0 3px 8px rgba(233, 30, 99, 0.3);
+}
+.confirm-pay:hover {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(233, 30, 99, 0.4);
+}
+.cancel-pay {
+  background: var(--light-pink);
+  color: var(--text-dark);
+  border: 1px solid var(--light-pink);
+}
+.cancel-pay:hover {
+  background: #f0a8ca;
+  transform: translateY(-2px);
+}
+
+/* Status badges */
+.status-pending { background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.status-confirmed { background: #d1ecf1; color: #0c5460; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.status-preparing { background: #ffeaa7; color: #e17055; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.status-ready { background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.status-picked { background: #cce7ff; color: #004085; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.status-delivered { 
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); 
+  color: var(--text-light); 
+  padding: 4px 8px; 
+  border-radius: 12px; 
+  font-size: 11px; 
+  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+}
+.status-completed { 
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); 
+  color: var(--text-light); 
+  padding: 4px 8px; 
+  border-radius: 12px; 
+  font-size: 11px; 
+  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+}
+.status-cancelled { background: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.status-failed { background: #f5c6cb; color: #721c24; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+
+/* Shipping fee display */
+.shipping-fee {
+  background: rgba(233, 30, 99, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+  margin: 5px 0;
+  font-size: 13px;
+  border-left: 3px solid var(--primary);
+  color: var(--text-dark);
+}
+
+/* Delivery service badges */
+.delivery-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.foodpanda { background: #ff6b6b; color: white; }
+.grabfood { background: #00b14f; color: white; }
+.lalamove { background: #ff9f43; color: white; }
+.maxim { background: #4834d4; color: white; }
+.angkas { background: #eb3b5a; color: white; }
+.pickup-store { background: var(--primary); color: var(--text-light); }
+
+/* Admin panel styling */
+.admin-panel {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.1);
+  border: 1px solid var(--light-pink);
+}
+
+/* Section headers with logo */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.section-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Dashboard Mission & Vision */
+.dashboard-mission-vision {
+  background: rgba(233, 30, 99, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.1);
+  border: 1px solid rgba(233, 30, 99, 0.2);
+}
+.dashboard-mission-vision h3 {
+  color: var(--primary);
+  margin-top: 0;
+  text-align: center;
+}
+.dashboard-mission-vision p {
+  color: var(--text-dark);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Customer orders styling */
+#customerOrders h3 {
+  color: var(--primary);
+}
+#customerOrders div {
+  background: var(--text-light);
+  border: 1px solid var(--light-pink);
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
+}
+
+/* Order tracking styles */
+.order-tracking {
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--text-light);
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.1);
+  border: 1px solid var(--light-pink);
+}
+
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--light-pink);
+}
+
+.tracking-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 20px 0;
+}
+
+.tracking-steps::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--light-pink);
+  z-index: 1;
+}
+
+.tracking-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--light-pink);
+  color: var(--text-dark);
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.step-active .step-icon {
+  background: var(--primary);
+  color: var(--text-light);
+}
+
+.step-completed .step-icon {
+  background: var(--accent);
+  color: var(--text-light);
+}
+
+.step-label {
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.step-active .step-label {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.step-completed .step-label {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tracking-info {
+  background: rgba(233, 30, 99, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border-left: 3px solid var(--primary);
+}
+
+.tracking-info p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+.order-items {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(233, 30, 99, 0.03);
+  border-radius: 6px;
+}
+
+.order-items ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.order-items li {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+/* Admin form clear styles */
+.admin-form {
+  background: rgba(233, 30, 99, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid var(--light-pink);
+}
+
+.admin-form h4 {
+  margin-top: 0;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo waffle.png" alt="Waffle & Drinks Logo" class="header-logo">
+  Waffle & Drinks
+  <button class="logoutBtn" onclick="logout()">Logout</button>
+</header>
+
+<div id="toast"></div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+  <div class="payment-content">
+    <h3 id="paymentModalTitle">Checkout Summary</h3>
+    <div id="paymentModalContent">
+      <!-- Content will be dynamically filled -->
+    </div>
+    <div class="payment-buttons">
+      <button class="confirm-pay" onclick="confirmPayment()">Confirm Order</button>
+      <button class="cancel-pay" onclick="closePaymentModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="loginDiv">
+  <div class="login-left">
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      
+      <div id="customerPasswordInfo" class="password-requirement" style="display: none;">
+        Password must be at least 8 characters with letters
+      </div>
+      
+      <select id="role" onchange="togglePasswordInfo()">
+        <option value="customer">Customer</option>
+        <option value="staff">Staff</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button onclick="login()">Login</button>
+      <div class="register-link">
+        Don't have an account? <a href="#" onclick="showRegister()">Register here</a>
+      </div>
+    </div>
+    
+    <div id="registerDiv">
+      <input type="text" id="regUsername" placeholder="Username">
+      <input type="email" id="regEmail" placeholder="Email">
+      <select id="regAddress">
+        <option value="">Select Address</option>
+        <option value="Anilao II, Mabini Batangas">Anilao II, Mabini Batangas</option>
+        <option value="Anilao I, Mabini Batangas">Anilao I, Mabini Batangas</option>
+        <option value="Bagalangit, Mabini Batangas">Bagalangit, Mabini Batangas</option>
+        <option value="Bulacan, Mabini Batangas">Bulacan, Mabini Batangas</option>
+        <option value="Calamias, Mabini Batangas">Calamias, Mabini Batangas</option>
+        <option value="Estrella, Mabini Batangas">Estrella, Mabini Batangas</option>
+        <option value="Gasang, Mabini Batangas">Gasang, Mabini Batangas</option>
+        <option value="Laurel, Mabini Batangas">Laurel, Mabini Batangas</option>
+        <option value="Ligaya, Mabini Batangas">Ligaya, Mabini Batangas</option>
+        <option value="Mainaga, Mabini Batangas">Mainaga, Mabini Batangas</option>
+        <option value="Mainit, Mabini Batangas">Mainit, Mabini Batangas</option>
+        <option value="Majuben, Mabini Batangas">Majuben, Mabini Batangas</option>
+        <option value="Malimatoc I, Mabini Batangas">Malimatoc I, Mabini Batangas</option>
+        <option value="Malimatoc II, Mabini Batangas">Malimatoc II, Mabini Batangas</option>
+        <option value="Nag-Iba, Mabini Batangas">Nag-Iba, Mabini Batangas</option>
+        <option value="Pilahan, Mabini Batangas">Pilahan, Mabini Batangas</option>
+        <option value="Poblacion, Mabini Batangas">Poblacion, Mabini Batangas</option>
+        <option value="Pulang Lupa, Mabini Batangas">Pulang Lupa, Mabini Batangas</option>
+        <option value="Pulong Anahao, Mabini Batangas">Pulong Anahao, Mabini Batangas</option>
+        <option value="Pulong Balibaguhan, Mabini Batangas">Pulong Balibaguhan, Mabini Batangas</option>
+        <option value="Pulong Niogan, Mabini Batangas">Pulong Niogan, Mabini Batangas</option>
+        <option value="Saguing, Mabini Batangas">Saguing, Mabini Batangas</option>
+        <option value="Sampaguita, Mabini Batangas">Sampaguita, Mabini Batangas</option>
+        <option value="San Francisco, Mabini Batangas">San Francisco, Mabini Batangas</option>
+        <option value="San Jose, Mabini Batangas">San Jose, Mabini Batangas</option>
+        <option value="San Juan, Mabini Batangas">San Juan, Mabini Batangas</option>
+        <option value="San Teodoro, Mabini Batangas">San Teodoro, Mabini Batangas</option>
+        <option value="Santa Ana, Mabini Batangas">Santa Ana, Mabini Batangas</option>
+        <option value="Santa Mesa, Mabini Batangas">Santa Mesa, Mabini Batangas</option>
+        <option value="Santo Niño, Mabini Batangas">Santo Niño, Mabini Batangas</option>
+        <option value="Sili, Mabini Batangas">Sili, Mabini Batangas</option>
+        <option value="Solo, Mabini Batangas">Solo, Mabini Batangas</option>
+        <option value="Talaga Proper, Mabini Batangas">Talaga Proper, Mabini Batangas</option>
+        <option value="Talaga East, Mabini Batangas">Talaga East, Mabini Batangas</option>
+      </select>
+      <input type="password" id="regPassword" placeholder="Password (8+ characters with letters)">
+      <input type="password" id="regConfirmPassword" placeholder="Confirm Password (8+ characters with letters)">
+      <div class="password-requirement">Password must be at least 8 characters and contain letters</div>
+      <p style="text-align: center; font-size: 14px; color: #c48b9f; margin: 0;">
+        Note: Registration is for customers only
+      </p>
+      <button onclick="register()">Register as Customer</button>
+      <div class="back-to-login">
+        Already have an account? <a href="#" onclick="showLogin()">Login here</a>
+      </div>
+    </div>
+
+    <div class="mission-vision-box">
+      <p>
+        <strong>Mission:</strong> Provide the best waffles and drinks experience to every customer, ensuring quality, freshness, and happiness in every bite.<br><br>
+        <strong>Vision:</strong> Be the most loved local dessert brand, spreading joy and delight through waffles and drinks across the community.
+      </p>
+    </div>
+
+    <!-- Social Media Icons -->
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank"><img src="cute facebook.jpg" alt="Facebook"></a>
+      <a href="https://instagram.com" target="_blank"><img src="ig cute.jpg" alt="Instagram"></a>
+      <a href="https://tiktok.com" target="_blank"><img src="tiktok purple.jpg" alt="TikTok"></a>
+    </div>
+  </div>
+
+  <img id="loginImage" src="logo waffle.png" alt="Waffle & Drinks">
+</div>
+
+<!-- DASHBOARD (Customer, Staff, Admin Sections) -->
+<div id="dashboard">
+  <!-- Customer Section -->
+  <div id="customerSection">
+    <div class="section-header">
+      <img src="logo waffle.png" alt="Waffle & Drinks Logo" class="section-logo">
+      <h2>Menu</h2>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+
+    <div class="cart" id="cartDiv">
+      <span class="cart-icon">🛒</span>
+      <span class="cart-badge" id="cartCount">0</span>
+      <h3>Your Cart</h3>
+      <div class="cart-items-wrapper" id="cartItems"></div>
+      <div class="cart-total">Subtotal: ₱<span id="cartTotal">0</span></div>
+      
+      <!-- Address Selection -->
+      <select id="deliveryAddress" class="address" onchange="updateShippingFee()">
+        <option value="">Select Delivery Address</option>
+        <!-- Options will be populated from user data -->
+      </select>
+      
+      <!-- Delivery Service Selection -->
+      <select id="deliveryService" class="delivery-service" onchange="updateShippingFee()">
+        <option value="">Select Delivery Service</option>
+        <option value="Foodpanda">Foodpanda</option>
+        <option value="GrabFood">GrabFood</option>
+        <option value="Lalamove Food">Lalamove Food</option>
+        <option value="Maxim Food Delivery">Maxim Food Delivery</option>
+        <option value="Angkas Food">Angkas Food</option>
+        <option value="Pickup / Store">Pickup / Store</option>
+      </select>
+      
+      <!-- Shipping Fee Display -->
+      <div id="shippingFeeDisplay" class="shipping-fee" style="display: none;">
+        Shipping Fee: ₱<span id="shippingFee">0</span>
+      </div>
+      
+      <!-- Total with Shipping -->
+      <div class="cart-total" style="color: var(--primary);">Total: ₱<span id="totalWithShipping">0</span></div>
+      
+      <select id="paymentMethod" class="payment" onchange="toggleReferenceInput()">
+        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+        <option value="GCash">GCash</option>
+        <option value="Credit Card">Credit Card</option>
+      </select>
+      <input type="text" id="referenceNumber" class="reference-input" placeholder="Reference Number">
+      <button class="pay" onclick="pay()">Checkout</button>
+    </div>
+
+    <div id="customerOrders"></div>
+
+    <!-- Mission & Vision Section -->
+    <div class="dashboard-mission-vision">
+      <h3>Our Mission & Vision</h3>
+      <p>
+        <strong>Mission:</strong> Provide the best waffles and drinks experience to every customer, ensuring quality, freshness, and happiness in every bite.<br><br>
+        <strong>Vision:</strong> Be the most loved local dessert brand, spreading joy and delight through waffles and drinks across the community.
+      </p>
+    </div>
+
+    <!-- Visit Us Info -->
+    <div class="visit-box">
+      <strong>Visit Us</strong><br>
+      456 Tasty Avenue, Waffle Town, WT 67890<br>
+      📞 +63 912 345 6789<br>
+      ✉️ contact@waffleanddrinks.com<br>
+      🕖 Open Every Day: 8:00 AM – 10:00 PM
+    </div>
+  </div>
+
+  <!-- Staff Section -->
+  <div id="staffSection">
+    <div class="section-header">
+      <img src="logo waffle.png" alt="Waffle & Drinks Logo" class="section-logo">
+      <h2>Orders</h2>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Items</th>
+          <th>Subtotal</th>
+          <th>Delivery Service</th>
+          <th>Shipping Fee</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Payment Method</th>
+          <th>Reference No.</th>
+          <th>Update Status</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTable"></tbody>
+    </table>
+
+    <!-- Mission & Vision Section -->
+    <div class="dashboard-mission-vision">
+      <h3>Our Mission & Vision</h3>
+      <p>
+        <strong>Mission:</strong> Provide the best waffles and drinks experience to every customer, ensuring quality, freshness, and happiness in every bite.<br><br>
+        <strong>Vision:</strong> Be the most loved local dessert brand, spreading joy and delight through waffles and drinks across the community.
+      </p>
+    </div>
+
+    <!-- Visit Us Info -->
+    <div class="visit-box">
+      <strong>Visit Us</strong><br>
+      456 Tasty Avenue, Waffle Town, WT 67890<br>
+      📞 +63 912 345 6789<br>
+      ✉️ contact@waffleanddrinks.com<br>
+      🕖 Open Every Day: 8:00 AM – 10:00 PM
+    </div>
+  </div>
+
+  <!-- Admin Section -->
+  <div id="adminSection">
+    <!-- Manage Users Panel -->
+    <div class="admin-panel">
+      <div class="section-header">
+        <img src="logo waffle.png" alt="Waffle & Drinks Logo" class="section-logo">
+        <h2>Manage Users</h2>
+      </div>
+      <div class="admin-form">
+        <h4>Add New User</h4>
+        <input type="text" id="newUsername" placeholder="Username">
+        <input type="email" id="newEmail" placeholder="Email">
+        <select id="newAddress">
+          <option value="">Select Address</option>
+          <option value="Anilao II, Mabini Batangas">Anilao II, Mabini Batangas</option>
+          <option value="Anilao I, Mabini Batangas">Anilao I, Mabini Batangas</option>
+          <option value="Bagalangit, Mabini Batangas">Bagalangit, Mabini Batangas</option>
+          <option value="Bulacan, Mabini Batangas">Bulacan, Mabini Batangas</option>
+          <option value="Calamias, Mabini Batangas">Calamias, Mabini Batangas</option>
+          <option value="Estrella, Mabini Batangas">Estrella, Mabini Batangas</option>
+          <option value="Gasang, Mabini Batangas">Gasang, Mabini Batangas</option>
+          <option value="Laurel, Mabini Batangas">Laurel, Mabini Batangas</option>
+          <option value="Ligaya, Mabini Batangas">Ligaya, Mabini Batangas</option>
+          <option value="Mainaga, Mabini Batangas">Mainaga, Mabini Batangas</option>
+          <option value="Mainit, Mabini Batangas">Mainit, Mabini Batangas</option>
+          <option value="Majuben, Mabini Batangas">Majuben, Mabini Batangas</option>
+          <option value="Malimatoc I, Mabini Batangas">Malimatoc I, Mabini Batangas</option>
+          <option value="Malimatoc II, Mabini Batangas">Malimatoc II, Mabini Batangas</option>
+          <option value="Nag-Iba, Mabini Batangas">Nag-Iba, Mabini Batangas</option>
+          <option value="Pilahan, Mabini Batangas">Pilahan, Mabini Batangas</option>
+          <option value="Poblacion, Mabini Batangas">Poblacion, Mabini Batangas</option>
+          <option value="Pulang Lupa, Mabini Batangas">Pulang Lupa, Mabini Batangas</option>
+          <option value="Pulong Anahao, Mabini Batangas">Pulong Anahao, Mabini Batangas</option>
+          <option value="Pulong Balibaguhan, Mabini Batangas">Pulong Balibaguhan, Mabini Batangas</option>
+          <option value="Pulong Niogan, Mabini Batangas">Pulong Niogan, Mabini Batangas</option>
+          <option value="Saguing, Mabini Batangas">Saguing, Mabini Batangas</option>
+          <option value="Sampaguita, Mabini Batangas">Sampaguita, Mabini Batangas</option>
+          <option value="San Francisco, Mabini Batangas">San Francisco, Mabini Batangas</option>
+          <option value="San Jose, Mabini Batangas">San Jose, Mabini Batangas</option>
+          <option value="San Juan, Mabini Batangas">San Juan, Mabini Batangas</option>
+          <option value="San Teodoro, Mabini Batangas">San Teodoro, Mabini Batangas</option>
+          <option value="Santa Ana, Mabini Batangas">Santa Ana, Mabini Batangas</option>
+          <option value="Santa Mesa, Mabini Batangas">Santa Mesa, Mabini Batangas</option>
+          <option value="Santo Niño, Mabini Batangas">Santo Niño, Mabini Batangas</option>
+          <option value="Sili, Mabini Batangas">Sili, Mabini Batangas</option>
+          <option value="Solo, Mabini Batangas">Solo, Mabini Batangas</option>
+          <option value="Talaga Proper, Mabini Batangas">Talaga Proper, Mabini Batangas</option>
+          <option value="Talaga East, Mabini Batangas">Talaga East, Mabini Batangas</option>
+        </select>
+        <input type="password" id="newPassword" placeholder="Password (8+ characters with letters)">
+        <div class="password-requirement">Password must be at least 8 characters and contain letters</div>
+        <select id="newRole">
+          <option value="customer">Customer</option>
+          <option value="staff">Staff</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button onclick="addUser()">Add User</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Username</th><th>Email</th><th>Address</th><th>Role</th><th>Action</th></tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Manage Menu Panel -->
+    <div class="admin-panel">
+      <div class="section-header">
+        <img src="logo waffle.png" alt="Waffle & Drinks Logo" class="section-logo">
+        <h2>Manage Menu</h2>
+      </div>
+      <div class="admin-form">
+        <h4>Add New Menu Item</h4>
+        <input type="text" id="menuName" placeholder="Menu Name">
+        <input type="number" id="menuPrice" placeholder="Price">
+        <input type="file" id="menuImage">
+        <button onclick="addMenu()">Add Menu Item</button>
+      </div>
+      <div class="menu-grid" id="adminMenuGrid"></div>
+    </div>
+
+    <!-- Customer Orders Panel -->
+    <div class="admin-panel">
+      <div class="section-header">
+        <img src="logo waffle.png" alt="Waffle & Drinks Logo" class="section-logo">
+        <h2>Customer Orders</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Items</th>
+            <th>Subtotal</th>
+            <th>Delivery Service</th>
+            <th>Shipping Fee</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Payment Method</th>
+            <th>Reference No.</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Mission & Vision Section -->
+    <div class="dashboard-mission-vision">
+      <h3>Our Mission & Vision</h3>
+      <p>
+        <strong>Mission:</strong> Provide the best waffles and drinks experience to every customer, ensuring quality, freshness, and happiness in every bite.<br><br>
+        <strong>Vision:</strong> Be the most loved local dessert brand, spreading joy and delight through waffles and drinks across the community.
+      </p>
+    </div>
+
+    <!-- Visit Us Info -->
+    <div class="visit-box">
+      <strong>Visit Us</strong><br>
+      456 Tasty Avenue, Waffle Town, WT 67890<br>
+      📞 +63 912 345 6789<br>
+      ✉️ contact@waffleanddrinks.com<br>
+      🕖 Open Every Day: 8:00 AM – 10:00 PM
+    </div>
+  </div>
+</div>
+
+<script>
+// Users - Only predefined users for customer
+let users = [
+  {username:'customer', password:'password123', role:'customer', email:'customer@example.com', address:'Anilao II, Mabini Batangas'}
+  // Staff and Admin users are created dynamically on login
+];
+
+// Menu Items - 32 items (23 original + 9 new)
+let menuItems = [
+  {id:1,name:'Plain Waffle',price:120,image:'plain waffle.jpg'},
+  {id:2,name:'Chocolate Waffle',price:140,image:'chocolate foundue waffle.jpg'},
+  {id:3,name:'Ice Coffee',price:60,image:'iced coffe.png'},
+  {id:4,name:'Iced Tea',price:50,image:'juice icetea.jpg'},
+  {id:5,name:'Mango Juice',price:80,image:'mango juice.jpg'},
+  {id:6,name:'Strawberry Waffle',price:150,image:'ultimate strawberry.jpg'},
+  {id:7,name:'Hot Coffee',price:70,image:'hot coffe.jpg'},
+  {id:8,name:'Lemon Juice',price:60,image:'freshb lemon juice.jpg'},
+  {id:9,name:'Ube Waffle',price:160,image:'Ube Waffle1.jpg'},
+  {id:10,name:'Milk Tea',price:90,image:'milke tae pearls.jpg'},
+  {id:11,name:'Matcha Latte',price:100,image:'matcha.jpg'},
+  {id:12,name:'Red velvet cake Waffle',price:130,image:'red velvet waffle.jpg'},
+  {id:13,name:'Vanilla coffee',price:95,image:'vanilla coffee.jpg'},
+  {id:14,name:'strawberry waffle nutella',price:85,image:'strawberry banana nutella.jpg'},
+  {id:15,name:'honey waffle',price:110,image:'waffle honey.jpg'},
+  {id:16,name:'burger Waffle',price:155,image:'burger waffle.jpg'},
+  {id:17,name:'halloween waffle',price:65,image:'halloween waffle.jpg'},
+  {id:18,name:'banana waffle',price:100,image:'banana waffle.jpg'},
+  {id:19,name:'caramelized cinnamon apple waffle',price:160,image:'caramelized cinnamon apple waffle.jpg'},
+  {id:20,name:'ube milktea',price:120,image:'ube milktea.jpg'},
+  {id:21,name:'cake waffle',price:90,image:'cake waffle.jpg'},
+  {id:22,name:'abocado juice',price:80,image:'abocado juice.jpg'},
+  {id:23,name:'strawberry juice',price:60,image:'strawberry juice.jpg'},
+  // New menu items with HTTPS image URLs
+  {id:24,name:'Chocolate Chip Waffle',price:145,image:'Chocolate Chip Waffle.jpg'},
+  {id:25,name:'Blueberry Waffle',price:155,image:'Blueberry Waffle.jpg'},
+  {id:26,name:'Nutella Waffle',price:165,image:'Nutella Waffle88.jpg'},
+  {id:27,name:'Fruit Waffle',price:170,image:'Fruit Waffle.jpg'},
+  {id:28,name:'Bubble Tea',price:110,image:'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnViYmxlJTIwdGVhfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60'},
+  {id:29,name:'Caramel Macchiato',price:125,image:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FyYW1lbCUyMG1hY2NoaWF0b3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'},
+  {id:30,name:'Mango Smoothie',price:95,image:'Mango Smoothie.jpg'},
+  {id:31,name:'Chocolate Milkshake',price:115,image:'Chocolate Milkshake.jpg'},
+  {id:32,name:'Caramel Frappe',price:130,image:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FyYW1lbCUyMGZyYXBwZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'}
+];
+
+// Shipping fees for different delivery services
+const shippingFees = {
+  'Foodpanda': 50,
+  'GrabFood': 45,
+  'Lalamove Food': 40,
+  'Maxim Food Delivery': 35,
+  'Angkas Food': 30,
+  'Pickup / Store': 0
+};
+
+let orders=[], cart=[], currentUser=null;
+let currentPaymentData = {};
+
+// Toast function
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show';
+  setTimeout(()=>{t.className='';},3000);
+}
+
+// Toggle password info based on role selection
+function togglePasswordInfo() {
+  const role = document.getElementById('role').value;
+  const customerInfo = document.getElementById('customerPasswordInfo');
+  
+  if (role === 'customer') {
+    customerInfo.style.display = 'block';
+  } else {
+    customerInfo.style.display = 'none';
+  }
+}
+
+// Show/hide register form
+function showRegister() {
+  document.getElementById('registerDiv').style.display = 'flex';
+  document.querySelector('.register-link').style.display = 'none';
+}
+
+function showLogin() {
+  document.getElementById('registerDiv').style.display = 'none';
+  document.querySelector('.register-link').style.display = 'block';
+}
+
+// Password validation function - AT LEAST 8 CHARS WITH LETTERS
+function validatePassword(password) {
+  // Check if at least 8 characters
+  if (password.length < 8) {
+    return false;
+  }
+  
+  // Check if contains at least one letter (a-z or A-Z)
+  if (!/[a-zA-Z]/.test(password)) {
+    return false;
+  }
+  
+  return true;
+}
+
+// Email validation function
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+// Register function with password validation - CUSTOMER ONLY
+function register() {
+  const username = document.getElementById('regUsername').value;
+  const email = document.getElementById('regEmail').value;
+  const address = document.getElementById('regAddress').value;
+  const password = document.getElementById('regPassword').value;
+  const confirmPassword = document.getElementById('regConfirmPassword').value;
+  
+  if (!username || !email || !address || !password || !confirmPassword) {
+    showToast('Please fill in all fields!');
+    return;
+  }
+  
+  // Validate email format
+  if (!validateEmail(email)) {
+    showToast('Please enter a valid email address!');
+    return;
+  }
+  
+  // Check password requirements
+  if (!validatePassword(password)) {
+    showToast('Password must be at least 8 characters and contain letters!');
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    showToast('Passwords do not match!');
+    return;
+  }
+  
+  // Check if username already exists
+  const existingUser = users.find(u => u.username === username);
+  if (existingUser) {
+    showToast('Username already exists!');
+    return;
+  }
+  
+  // Add new user - ALWAYS AS CUSTOMER
+  users.push({username, email, address, password, role: 'customer'});
+  showToast('Registration successful! Please login as customer.');
+  showLogin();
+  
+  // Clear registration form
+  document.getElementById('regUsername').value = '';
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regAddress').value = '';
+  document.getElementById('regPassword').value = '';
+  document.getElementById('regConfirmPassword').value = '';
+}
+
+// Login function - ANY USERNAME & PASSWORD WITH 8+ CHARS AND LETTERS WORKS FOR STAFF/ADMIN
+function login(){
+  const username=document.getElementById('username').value;
+  const password=document.getElementById('password').value;
+  const role=document.getElementById('role').value;
+  
+  if (!username || !password) {
+    showToast('Please fill in all fields!');
+    return;
+  }
+  
+  // Check password requirements for ALL users
+  if (!validatePassword(password)) {
+    showToast('Password must be at least 8 characters and contain letters!');
+    return;
+  }
+  
+  // For customers: check exact username and password match
+  if (role === 'customer') {
+    const user=users.find(u=>u.username===username && u.password===password && u.role===role);
+    if(user){
+      currentUser=user;
+      document.getElementById('loginDiv').style.display='none';
+      document.getElementById('dashboard').style.display='block';
+      showToast('Login Successful!');
+      setupDashboard();
+    } else {
+      showToast('Invalid credentials!');
+    }
+  } 
+  // For staff and admin: ANY USERNAME & ANY PASSWORD WITH 8+ CHARS AND LETTERS WORKS
+  else {
+    // Check if this staff/admin user already exists
+    let user = users.find(u=>u.username===username && u.role===role);
+    
+    // If user doesn't exist, create them dynamically
+    if (!user) {
+      user = {username, password, role, email: `${username}@example.com`, address: 'N/A'};
+      users.push(user);
+    }
+    
+    currentUser=user;
+    document.getElementById('loginDiv').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    showToast(`Login Successful! Welcome ${role} - ${username}`);
+    setupDashboard();
+  }
+}
+
+function logout(){
+  currentUser=null;
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginDiv').style.display='flex';
+  cart=[]; renderCart();
+}
+
+// Dashboard Setup
+function setupDashboard(){
+  document.getElementById('customerSection').style.display='none';
+  document.getElementById('staffSection').style.display='none';
+  document.getElementById('adminSection').style.display='none';
+  if(currentUser.role==='customer'){
+    document.getElementById('customerSection').style.display='block';
+    renderMenu();
+    renderCart();
+    renderCustomerOrders();
+    populateAddressDropdown();
+  }
+  if(currentUser.role==='staff'){
+    document.getElementById('staffSection').style.display='block';
+    renderOrders();
+  }
+  if(currentUser.role==='admin'){
+    document.getElementById('adminSection').style.display='block';
+    renderUsers();
+    renderAdminMenu();
+    renderAdminOrders();
+  }
+}
+
+// Populate address dropdown for customer
+function populateAddressDropdown() {
+  const addressDropdown = document.getElementById('deliveryAddress');
+  addressDropdown.innerHTML = '<option value="">Select Delivery Address</option>';
+  
+  // Add the user's registered address as the first option
+  if (currentUser && currentUser.address) {
+    const option = document.createElement('option');
+    option.value = currentUser.address;
+    option.textContent = currentUser.address;
+    addressDropdown.appendChild(option);
+  }
+  
+  // Add all available addresses as options
+  const addresses = [
+    'Anilao II, Mabini Batangas', 'Anilao I, Mabini Batangas', 'Bagalangit, Mabini Batangas', 'Bulacan, Mabini Batangas', 
+    'Calamias, Mabini Batangas', 'Estrella, Mabini Batangas', 'Gasang, Mabini Batangas', 'Laurel, Mabini Batangas', 
+    'Ligaya, Mabini Batangas', 'Mainaga, Mabini Batangas', 'Mainit, Mabini Batangas', 'Majuben, Mabini Batangas', 
+    'Malimatoc I, Mabini Batangas', 'Malimatoc II, Mabini Batangas', 'Nag-Iba, Mabini Batangas', 'Pilahan, Mabini Batangas', 
+    'Poblacion, Mabini Batangas', 'Pulang Lupa, Mabini Batangas', 'Pulong Anahao, Mabini Batangas', 
+    'Pulong Balibaguhan, Mabini Batangas', 'Pulong Niogan, Mabini Batangas', 'Saguing, Mabini Batangas', 
+    'Sampaguita, Mabini Batangas', 'San Francisco, Mabini Batangas', 'San Jose, Mabini Batangas', 'San Juan, Mabini Batangas', 
+    'San Teodoro, Mabini Batangas', 'Santa Ana, Mabini Batangas', 'Santa Mesa, Mabini Batangas', 'Santo Niño, Mabini Batangas', 
+    'Sili, Mabini Batangas', 'Solo, Mabini Batangas', 'Talaga Proper, Mabini Batangas', 'Talaga East, Mabini Batangas'
+  ];
+  
+  addresses.forEach(address => {
+    // Skip if this is the user's registered address (already added)
+    if (currentUser && currentUser.address === address) return;
+    
+    const option = document.createElement('option');
+    option.value = address;
+    option.textContent = address;
+    addressDropdown.appendChild(option);
+  });
+}
+
+// Update shipping fee based on selected delivery service
+function updateShippingFee() {
+  const deliveryService = document.getElementById('deliveryService').value;
+  const shippingFeeDisplay = document.getElementById('shippingFeeDisplay');
+  const shippingFeeElement = document.getElementById('shippingFee');
+  const totalWithShippingElement = document.getElementById('totalWithShipping');
+  
+  if (deliveryService && shippingFees[deliveryService] !== undefined) {
+    const shippingFee = shippingFees[deliveryService];
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const total = subtotal + shippingFee;
+    
+    shippingFeeElement.textContent = shippingFee;
+    totalWithShippingElement.textContent = total;
+    
+    // Show shipping fee display only if there's a shipping fee
+    if (shippingFee > 0) {
+      shippingFeeDisplay.style.display = 'block';
+    } else {
+      shippingFeeDisplay.style.display = 'none';
+    }
+  } else {
+    shippingFeeDisplay.style.display = 'none';
+    totalWithShippingElement.textContent = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  }
+}
+
+// Toggle reference number input based on payment method
+function toggleReferenceInput() {
+  const paymentMethod = document.getElementById('paymentMethod').value;
+  const referenceInput = document.getElementById('referenceNumber');
+  
+  if (paymentMethod === 'Cash on Delivery (COD)') {
+    referenceInput.style.display = 'none';
+  } else {
+    referenceInput.style.display = 'block';
+    referenceInput.placeholder = paymentMethod === 'GCash' ? 'GCash Reference Number' : 'Credit Card Transaction ID';
+  }
+}
+
+// Show payment modal
+function showPaymentModal() {
+  const deliveryAddress = document.getElementById('deliveryAddress').value;
+  const paymentMethod = document.getElementById('paymentMethod').value;
+  const deliveryService = document.getElementById('deliveryService').value;
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const shippingFee = deliveryService ? shippingFees[deliveryService] : 0;
+  const total = subtotal + shippingFee;
+  
+  const modal = document.getElementById('paymentModal');
+  const modalTitle = document.getElementById('paymentModalTitle');
+  const modalContent = document.getElementById('paymentModalContent');
+  
+  modalTitle.textContent = 'Checkout Summary';
+  
+  if (!deliveryAddress) {
+    showToast('Please select a delivery address!');
+    return;
+  }
+  
+  if (!deliveryService) {
+    showToast('Please select a delivery service!');
+    return;
+  }
+  
+  modalContent.innerHTML = `
+    <p><strong>Delivery Address:</strong> ${deliveryAddress}</p>
+    <p><strong>Delivery Service:</strong> ${deliveryService}</p>
+    <p><strong>Subtotal:</strong> ₱${subtotal}</p>
+    ${shippingFee > 0 ? `<p><strong>Shipping Fee:</strong> ₱${shippingFee}</p>` : ''}
+    <p><strong>Total Amount:</strong> ₱${total}</p>
+    <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+    ${paymentMethod !== 'Cash on Delivery (COD)' ? `
+      <p>Please enter your ${paymentMethod === 'GCash' ? 'GCash Reference Number' : 'Credit Card Transaction ID'}:</p>
+      <input type="text" id="modalReferenceNumber" placeholder="${paymentMethod === 'GCash' ? 'GCash Reference Number' : 'Credit Card Transaction ID'}" required>
+    ` : `
+      <p>Please prepare cash payment ${deliveryService === 'Pickup / Store' ? 'upon pickup' : 'upon delivery'}.</p>
+    `}
+    <p style="font-size: 12px; color: #c48b9f; margin-top: 5px;">
+      ${deliveryService === 'Pickup / Store' ? 
+        'Your order will be ready for pickup at our store.' : 
+        `Order will be delivered via ${deliveryService} to ${deliveryAddress}`}
+    </p>
+  `;
+  
+  modal.style.display = 'flex';
+}
+
+// Close payment modal
+function closePaymentModal() {
+  document.getElementById('paymentModal').style.display = 'none';
+}
+
+// Confirm payment
+function confirmPayment() {
+  const deliveryAddress = document.getElementById('deliveryAddress').value;
+  const paymentMethod = document.getElementById('paymentMethod').value;
+  const deliveryService = document.getElementById('deliveryService').value;
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const shippingFee = shippingFees[deliveryService];
+  const total = subtotal + shippingFee;
+  let referenceNumber = '';
+  
+  if (paymentMethod !== 'Cash on Delivery (COD)') {
+    const modalReferenceInput = document.getElementById('modalReferenceNumber');
+    if (!modalReferenceInput.value) {
+      showToast(`Please enter ${paymentMethod === 'GCash' ? 'GCash reference number' : 'credit card transaction ID'}`);
+      return;
+    }
+    referenceNumber = modalReferenceInput.value;
+  }
+  
+  // Process payment
+  const order = {
+    id: Date.now(),
+    customer: currentUser.username,
+    email: currentUser.email,
+    address: deliveryAddress,
+    items: [...cart],
+    subtotal: subtotal,
+    deliveryService: deliveryService,
+    shippingFee: shippingFee,
+    total: total,
+    status: 'Pending',
+    payment: paymentMethod,
+    referenceNumber: referenceNumber
+  };
+  
+  orders.push(order);
+  cart = []; 
+  renderCart(); 
+  renderCustomerOrders();
+  closePaymentModal();
+  showToast('Order Successful! Your order has been placed.');
+}
+
+// Pay function - shows payment modal
+function pay(){
+  if(cart.length === 0){ 
+    showToast('Cart empty!'); 
+    return; 
+  }
+  
+  const deliveryAddress = document.getElementById('deliveryAddress').value;
+  if (!deliveryAddress) {
+    showToast('Please select a delivery address!');
+    return;
+  }
+  
+  const deliveryService = document.getElementById('deliveryService').value;
+  if (!deliveryService) {
+    showToast('Please select a delivery service!');
+    return;
+  }
+  
+  showPaymentModal();
+}
+
+// Customer Functions
+function renderMenu(){
+  const grid=document.getElementById('menuGrid');
+  grid.innerHTML='';
+  menuItems.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='menu-item';
+    div.innerHTML=`<img src="${item.image}" alt="${item.name}"><h4>${item.name}</h4><p>₱${item.price}</p><button onclick="addToCart(${item.id})">Add</button>`;
+    grid.appendChild(div);
+  });
+}
+function addToCart(id){
+  const item=menuItems.find(i=>i.id===id);
+  const cartItem=cart.find(c=>c.id===id);
+  if(cartItem) cartItem.qty+=1; else cart.push({id:item.id,name:item.name,price:item.price,qty:1});
+  renderCart();
+  showToast('Added to cart!');
+}
+function renderCart(){
+  const wrapper=document.getElementById('cartItems');
+  const count=document.getElementById('cartCount');
+  const totalElem=document.getElementById('cartTotal');
+  const totalWithShippingElem = document.getElementById('totalWithShipping');
+  wrapper.innerHTML='';
+  let subtotal=0,qty=0;
+  cart.forEach(c=>{
+    subtotal+=c.price*c.qty;
+    qty+=c.qty;
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`${c.name} x ${c.qty} <button onclick="removeCart(${c.id})">X</button>`;
+    wrapper.appendChild(div);
+  });
+  count.textContent=qty;
+  totalElem.textContent=subtotal;
+  totalWithShippingElem.textContent=subtotal;
+  
+  // Reset delivery service selection
+  document.getElementById('deliveryService').value = '';
+  document.getElementById('shippingFeeDisplay').style.display = 'none';
+}
+function removeCart(id){cart=cart.filter(c=>c.id!==id); renderCart();}
+
+// Enhanced customer orders with tracking
+function renderCustomerOrders(){
+  const div=document.getElementById('customerOrders');
+  div.innerHTML='<h3>Your Orders</h3>';
+  const userOrders = orders.filter(o=>o.customer===currentUser.username);
+  
+  if (userOrders.length === 0) {
+    div.innerHTML += '<p>No orders yet.</p>';
+    return;
+  }
+  
+  userOrders.forEach(o=>{
+    const items=o.items.map(i=>`${i.name} x${i.qty}`).join(', ');
+    const statusClass = getStatusClass(o.status);
+    const deliveryClass = getDeliveryClass(o.deliveryService);
+    
+    const orderDiv=document.createElement('div');
+    orderDiv.className = 'order-tracking';
+    orderDiv.innerHTML = `
+      <div class="tracking-header">
+        <strong>Order#${o.id}</strong>
+        <span class="${statusClass}">${o.status}</span>
+      </div>
+      <div class="tracking-steps">
+        ${renderTrackingSteps(o.status)}
+      </div>
+      <div class="tracking-info">
+        <p><strong>Items:</strong> ${items}</p>
+        <p><strong>Address:</strong> ${o.address}</p>
+        <p><strong>Subtotal:</strong> ₱${o.subtotal}</p>
+        ${o.shippingFee > 0 ? `<p><strong>Shipping Fee:</strong> ₱${o.shippingFee}</p>` : ''}
+        <p><strong>Total:</strong> ₱${o.total}</p>
+        <p><strong>Delivery Service:</strong> <span class="delivery-badge ${deliveryClass}">${o.deliveryService}</span></p>
+        <p><strong>Payment Method:</strong> ${o.payment}${o.referenceNumber ? ` | Ref: ${o.referenceNumber}` : ''}</p>
+      </div>
+    `;
+    div.appendChild(orderDiv);
+  });
+}
+
+// Render tracking steps based on order status
+function renderTrackingSteps(status) {
+  const steps = [
+    {id: 'pending', label: 'Pending', icon: '⏳'},
+    {id: 'confirmed', label: 'Confirmed', icon: '✅'},
+    {id: 'preparing', label: 'Preparing', icon: '👨‍🍳'},
+    {id: 'ready', label: 'Ready', icon: '📦'},
+    {id: 'on-the-way', label: 'On the Way', icon: '🚚'},
+    {id: 'delivered', label: 'Delivered', icon: '🏠'}
+  ];
+  
+  let currentStepIndex = 0;
+  switch(status) {
+    case 'Pending': currentStepIndex = 0; break;
+    case 'Confirmed / Accepted': currentStepIndex = 1; break;
+    case 'Preparing / Cooking': currentStepIndex = 2; break;
+    case 'Ready for Pickup': currentStepIndex = 3; break;
+    case 'Picked Up / On the Way': currentStepIndex = 4; break;
+    case 'Delivered': currentStepIndex = 5; break;
+    case 'Completed': currentStepIndex = 5; break;
+    default: currentStepIndex = 0;
+  }
+  
+  let stepsHTML = '';
+  steps.forEach((step, index) => {
+    let stepClass = '';
+    if (index < currentStepIndex) {
+      stepClass = 'step-completed';
+    } else if (index === currentStepIndex) {
+      stepClass = 'step-active';
+    }
+    
+    stepsHTML += `
+      <div class="tracking-step ${stepClass}">
+        <div class="step-icon">${step.icon}</div>
+        <div class="step-label">${step.label}</div>
+      </div>
+    `;
+  });
+  
+  return stepsHTML;
+}
+
+// Get status CSS class
+function getStatusClass(status) {
+  const statusClasses = {
+    'Pending': 'status-pending',
+    'Confirmed / Accepted': 'status-confirmed',
+    'Preparing / Cooking': 'status-preparing',
+    'Ready for Pickup': 'status-ready',
+    'Picked Up / On the Way': 'status-picked',
+    'Delivered': 'status-delivered',
+    'Completed': 'status-completed',
+    'Cancelled': 'status-cancelled',
+    'Failed / Unsuccessful Delivery': 'status-failed'
+  };
+  return statusClasses[status] || 'status-pending';
+}
+
+// Get delivery service CSS class
+function getDeliveryClass(deliveryService) {
+  const deliveryClasses = {
+    'Foodpanda': 'foodpanda',
+    'GrabFood': 'grabfood',
+    'Lalamove Food': 'lalamove',
+    'Maxim Food Delivery': 'maxim',
+    'Angkas Food': 'angkas',
+    'Pickup / Store': 'pickup-store'
+  };
+  return deliveryClasses[deliveryService] || 'foodpanda';
+}
+
+// Staff Functions
+function renderOrders(){
+  const tbody=document.getElementById('ordersTable');
+  tbody.innerHTML='';
+  orders.forEach(o=>{
+    const tr=document.createElement('tr');
+    const items=o.items.map(i=>`${i.name} x${i.qty}`).join(', ');
+    const statusClass = getStatusClass(o.status);
+    const deliveryClass = getDeliveryClass(o.deliveryService);
+    
+    // Determine available next statuses based on current status
+    let nextStatusOptions = '';
+    switch(o.status) {
+      case 'Pending':
+        nextStatusOptions = `
+          <option value="Confirmed / Accepted">Confirmed / Accepted</option>
+          <option value="Cancelled">Cancelled</option>
+        `;
+        break;
+      case 'Confirmed / Accepted':
+        nextStatusOptions = `
+          <option value="Preparing / Cooking">Preparing / Cooking</option>
+          <option value="Cancelled">Cancelled</option>
+        `;
+        break;
+      case 'Preparing / Cooking':
+        nextStatusOptions = `
+          <option value="Ready for Pickup">Ready for Pickup</option>
+          <option value="Cancelled">Cancelled</option>
+        `;
+        break;
+      case 'Ready for Pickup':
+        nextStatusOptions = `
+          <option value="Picked Up / On the Way">Picked Up / On the Way</option>
+          <option value="Cancelled">Cancelled</option>
+        `;
+        break;
+      case 'Picked Up / On the Way':
+        nextStatusOptions = `
+          <option value="Delivered">Delivered</option>
+          <option value="Failed / Unsuccessful Delivery">Failed / Unsuccessful Delivery</option>
+        `;
+        break;
+      case 'Delivered':
+        nextStatusOptions = `
+          <option value="Completed">Completed</option>
+        `;
+        break;
+      case 'Failed / Unsuccessful Delivery':
+        nextStatusOptions = `
+          <option value="Cancelled">Cancelled</option>
+        `;
+        break;
+      default:
+        nextStatusOptions = `<option value="${o.status}">${o.status}</option>`;
+    }
+    
+    tr.innerHTML=`
+      <td>${o.id}</td>
+      <td>${o.customer}</td>
+      <td>${o.email}</td>
+      <td>${o.address}</td>
+      <td>${items}</td>
+      <td>₱${o.subtotal}</td>
+      <td><span class="delivery-badge ${deliveryClass}">${o.deliveryService}</span></td>
+      <td>₱${o.shippingFee}</td>
+      <td>₱${o.total}</td>
+      <td><span class="${statusClass}">${o.status}</span></td>
+      <td>${o.payment}</td>
+      <td>${o.referenceNumber || '-'}</td>
+      <td>
+        <select onchange="updateStatus(${o.id},this.value)" ${o.status === 'Completed' || o.status === 'Cancelled' ? 'disabled' : ''}>
+          <option value="${o.status}">${o.status}</option>
+          ${nextStatusOptions}
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateStatus(id,status){
+  const o=orders.find(o=>o.id===id); 
+  if(o){
+    o.status=status; 
+    renderOrders(); 
+    renderCustomerOrders(); 
+    renderAdminOrders();
+    showToast(`Order #${id} status updated to ${status}`);
+  }
+}
+
+// Admin Functions with password validation FOR ALL USERS
+function addUser(){
+  const u=document.getElementById('newUsername').value;
+  const e=document.getElementById('newEmail').value;
+  const a=document.getElementById('newAddress').value;
+  const p=document.getElementById('newPassword').value;
+  const r=document.getElementById('newRole').value;
+  
+  if(u && e && a && p){ 
+    // Validate email format
+    if (!validateEmail(e)) {
+      showToast('Please enter a valid email address!');
+      return;
+    }
+    
+    // Check password requirements for ALL users
+    if (!validatePassword(p)) {
+      showToast('Password must be at least 8 characters and contain letters!');
+      return;
+    }
+    users.push({username:u, email:e, address:a, password:p, role:r}); 
+    renderUsers(); 
+    showToast('User Added!'); 
+    
+    // Clear the form after successful addition
+    document.getElementById('newUsername').value = '';
+    document.getElementById('newEmail').value = '';
+    document.getElementById('newAddress').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('newRole').value = 'customer';
+  }
+}
+function renderUsers(){
+  const tbody=document.getElementById('usersTable');
+  tbody.innerHTML='';
+  users.forEach((u,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${u.username}</td><td>${u.email}</td><td>${u.address}</td><td>${u.role}</td><td><button onclick="removeUser(${i})">Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function removeUser(i){users.splice(i,1); renderUsers(); showToast('User Removed!');}
+
+// Admin Menu with auto-clear form
+function addMenu(){
+  const n=document.getElementById('menuName').value;
+  const p=Number(document.getElementById('menuPrice').value);
+  const f=document.getElementById('menuImage').files[0];
+  if(n && p && f){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const id=Date.now();
+      menuItems.push({id,name:n,price:p,image:e.target.result});
+      renderAdminMenu();
+      renderMenu();
+      showToast('Menu Item Added!');
+      
+      // Clear the form
+      document.getElementById('menuName').value = '';
+      document.getElementById('menuPrice').value = '';
+      document.getElementById('menuImage').value = '';
+    };
+    reader.readAsDataURL(f);
+  }
+}
+function renderAdminMenu(){
+  const grid=document.getElementById('adminMenuGrid');
+  grid.innerHTML='';
+  menuItems.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='menu-item';
+    div.innerHTML=`<img src="${item.image}" alt="${item.name}"><h4>${item.name}</h4><p>₱${item.price}</p>
+      <button onclick="deleteMenu(${item.id})">Delete</button>
+      <button onclick="editMenu(${item.id})">Edit</button>`;
+    grid.appendChild(div);
+  });
+}
+function deleteMenu(id){menuItems=menuItems.filter(i=>i.id!==id); renderAdminMenu(); renderMenu(); showToast('Menu Item Deleted!'); }
+function editMenu(id){
+  const item=menuItems.find(m=>m.id===id);
+  if(item){
+    const newName=prompt('Edit Menu Name:', item.name);
+    const newPrice=prompt('Edit Price:', item.price);
+    if(newName && newPrice){
+      item.name=newName;
+      item.price=Number(newPrice);
+      renderAdminMenu();
+      renderMenu();
+      showToast('Menu Item Edited!');
+    }
+  }
+}
+
+// Admin Orders
+function renderAdminOrders(){
+  const tbody=document.getElementById('adminOrdersTable');
+  tbody.innerHTML='';
+  orders.forEach(o=>{
+    const items=o.items.map(i=>`${i.name} x${i.qty}`).join(', ');
+    const statusClass = getStatusClass(o.status);
+    const deliveryClass = getDeliveryClass(o.deliveryService);
+    
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${o.id}</td>
+      <td>${o.customer}</td>
+      <td>${o.email}</td>
+      <td>${o.address}</td>
+      <td>${items}</td>
+      <td>₱${o.subtotal}</td>
+      <td><span class="delivery-badge ${deliveryClass}">${o.deliveryService}</span></td>
+      <td>₱${o.shippingFee}</td>
+      <td>₱${o.total}</td>
+      <td><span class="${statusClass}">${o.status}</span></td>
+      <td>${o.payment}</td>
+      <td>${o.referenceNumber || '-'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Initialize reference input and password info on page load
+document.addEventListener('DOMContentLoaded', function() {
+  toggleReferenceInput();
+  togglePasswordInfo();
+});
+</script>
+</body>
+</html>
